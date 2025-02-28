@@ -1,31 +1,62 @@
 #!/bin/bash
 
-# Define the script URL and installation path
+# Define script variables
 SCRIPT_URL="https://raw.githubusercontent.com/Jhon-mark23/Termux-beta/refs/heads/Test/Base64.sh"
 SCRIPT_NAME="menu.sh"
 INSTALL_DIR="$HOME/dig_checker"
 INSTALL_PATH="$INSTALL_DIR/$SCRIPT_NAME"
 BIN_PATH="/data/data/com.termux/files/usr/bin/menu"
 
-# Update package list and install required tools
-echo "Updating Termux and installing required packages..."
-pkg update -y && pkg upgrade -y
-pkg install -y dnsutils curl coreutils bc
+# Color variables
+GREEN="\e[32m"
+YELLOW="\e[33m"
+RED="\e[31m"
+NC="\e[0m"
 
-# Create installation directory
+# Function to print a title
+print_title() {
+    echo -e "${YELLOW}==================================${NC}"
+    echo -e "${GREEN}$1${NC}"
+    echo -e "${YELLOW}==================================${NC}"
+}
+
+# Function to show steps
+show_step() {
+    echo -e "${GREEN}[✔]${NC} $1"
+}
+
+clear
+print_title "Termux Script Auto-Installer"
+
+echo -e "${YELLOW}Starting installation...${NC}"
+sleep 1
+
+# Step 1: Update package list
+show_step "Updating package list..."
+pkg update -y > /dev/null 2>&1
+
+# Step 2: Install required dependencies
+show_step "Installing required packages..."
+pkg install -y dnsutils curl coreutils bc > /dev/null 2>&1
+
+# Step 3: Create installation directory
+show_step "Creating installation directory..."
 mkdir -p "$INSTALL_DIR"
 
-# Download the script
-echo "Downloading $SCRIPT_NAME..."
-curl -o "$INSTALL_PATH" "$SCRIPT_URL"
+# Step 4: Download and decode Base64 script
+show_step "Downloading and decoding script..."
+BASE64_DATA=$(curl -s "$SCRIPT_URL")
+echo "$BASE64_DATA" | base64 -d > "$INSTALL_PATH"
 
-# Make it executable
+# Step 5: Set script permissions
+show_step "Setting up executable permissions..."
 chmod +x "$INSTALL_PATH"
 
-# Move the script to /data/data/com.termux/files/usr/bin/menu
-echo "Setting up menu command..."
+# Step 6: Move script to bin path
+show_step "Placing script in /usr/bin/..."
 mv -f "$INSTALL_PATH" "$BIN_PATH"
 chmod +x "$BIN_PATH"
 
-echo "Installation complete!"
-echo "Run the script using: menu"
+# Final Message
+print_title "Installation Complete!"
+echo -e "Run the script using: ${GREEN}menu${NC}"
