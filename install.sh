@@ -6,6 +6,11 @@ SCRIPT_NAME="menu"
 INSTALL_DIR="$HOME/dig_checker"
 INSTALL_PATH="$INSTALL_DIR/$SCRIPT_NAME"
 
+# Update package list and install required tools
+echo "Updating Termux and installing required packages..."
+pkg update -y && pkg upgrade -y
+pkg install -y dnsutils curl coreutils
+
 # Create installation directory
 mkdir -p "$INSTALL_DIR"
 
@@ -17,7 +22,9 @@ curl -o "$INSTALL_PATH" "$SCRIPT_URL"
 chmod +x "$INSTALL_PATH"
 
 # Create a shortcut command
-echo "alias menu='$INSTALL_PATH'" >> "$HOME/.bashrc"
+if ! grep -q "alias menu=" "$HOME/.bashrc"; then
+    echo "alias menu='$INSTALL_PATH'" >> "$HOME/.bashrc"
+fi
 source "$HOME/.bashrc"
 
 echo "Installation complete!"
