@@ -6,12 +6,12 @@ This script installs necessary tools and sets up the `menu` command.
 
 ## Installation
 
-## VERSION: 1.3
+## VERSION: 1.4
 
 Run the following command in **Termux**:
 
 ```bash
-curl -o install.sh "https://raw.githubusercontent.com/Jhon-mark23/Termux-beta/refs/heads/Test/base64.sh" && chmod +x install.sh && ./install.sh
+curl -o install.sh "https://raw.githubusercontent.com/Jhon-mark23/Termux-beta/refs/heads/Test/install.sh" && chmod +x install.sh && ./install.sh
 ```
 
 ## Updates 
