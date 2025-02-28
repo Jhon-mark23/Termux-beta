@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the script URL and installation path
-SCRIPT_URL="https://raw.githubusercontent.com/Jhon-mark23/Termux-beta/main/menu.sh"
+SCRIPT_URL="https://raw.githubusercontent.com/Jhon-mark23/Termux-beta/refs/heads/Test/Base64.sh"
 SCRIPT_NAME="menu.sh"
 INSTALL_DIR="$HOME/dig_checker"
 INSTALL_PATH="$INSTALL_DIR/$SCRIPT_NAME"
