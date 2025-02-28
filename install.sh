@@ -9,7 +9,7 @@ INSTALL_PATH="$INSTALL_DIR/$SCRIPT_NAME"
 # Update package list and install required tools
 echo "Updating Termux and installing required packages..."
 pkg update -y && pkg upgrade -y
-pkg install -y dnsutils curl coreutils
+pkg install -y dnsutils curl coreutils bc
 
 # Create installation directory
 mkdir -p "$INSTALL_DIR"
