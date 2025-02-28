@@ -13,6 +13,10 @@ RED="\e[31m"
 BLUE="\e[34m"
 RESET="\e[0m"
 
+# GitHub raw URL for updates
+SCRIPT_URL="https://raw.githubusercontent.com/Jhon-mark23/Termux-beta/refs/heads/main/menu.sh"
+BIN_PATH="/data/data/com.termux/files/usr/bin/menu"
+
 # Load DNS and NS from file
 declare -a DNS_LIST NS_LIST
 if [[ -f "$DNS_FILE" ]]; then
@@ -25,6 +29,15 @@ save_data() {
     echo "NS_LIST=(${NS_LIST[@]})" >> "$DNS_FILE"
 }
 
+# Update script
+update_script() {
+    echo "Updating script..."
+    curl -o "$BIN_PATH" "$SCRIPT_URL"
+    chmod +x "$BIN_PATH"
+    echo "Update complete! Run 'menu' to use the latest version."
+    exit 0
+}
+
 # Display Menu
 menu() {
     clear
@@ -34,12 +47,13 @@ menu() {
     echo -e "2) Add NameServer"
     echo -e "3) Set Dig Interval"
     echo -e "4) Start Checking DNS"
-    echo -e "5) Exit"
+    echo -e "5) Update Script"
+    echo -e "6) Exit"
     echo "-------------------------------------------"
     echo -e "Stored DNS IPs: ${YELLOW}${#DNS_LIST[@]}${RESET}"
     echo -e "Stored NameServers: ${YELLOW}${#NS_LIST[@]}${RESET}"
     echo -e "Interval: ${YELLOW}${DIG_INTERVAL} sec${RESET}"
-    echo -e "Version 1.2"
+    echo -e "Version 1.3"
     echo "-------------------------------------------"
     echo -n "Choose an option (Press Enter to Start Checking): "
     read -r option
@@ -49,7 +63,8 @@ menu() {
         2) add_ns ;;
         3) set_interval ;;
         4) start_dig ;;
-        5) exit 0 ;;
+        5) update_script ;;
+        6) exit 0 ;;
         *) start_dig ;;
     esac
 }
