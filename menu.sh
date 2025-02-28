@@ -4,12 +4,12 @@
 DNS_FILE="dns_data.txt"
 
 # Default settings
-DIG_INTERVAL=3  # Default dig interval in seconds (Minimum: 2s)
+DIG_INTERVAL=3  # Default dig interval in seconds
 
 # ANSI color codes
 GREEN="\e[32m"
-RED="\e[31m"
 YELLOW="\e[33m"
+RED="\e[31m"
 BLUE="\e[34m"
 RESET="\e[0m"
 
@@ -67,16 +67,36 @@ add_ns() {
     menu
 }
 
-# Set Dig Interval
+# Set Dig Interval (0 - 10 seconds)
 set_interval() {
-    echo -n "Enter dig interval (min 2s): "
+    echo -n "Enter dig interval (0-10s): "
     read -r new_interval
-    if (( new_interval >= 2 )); then
-        DIG_INTERVAL=$new_interval
+    if [[ "$new_interval" =~ ^[0-9]+$ ]]; then
+        if (( new_interval < 0 )); then
+            DIG_INTERVAL=0
+        elif (( new_interval > 10 )); then
+            DIG_INTERVAL=10
+        else
+            DIG_INTERVAL=$new_interval
+        fi
     else
-        DIG_INTERVAL=2
+        echo -e "${RED}Invalid input. Please enter a number between 0 and 10.${RESET}"
     fi
     menu
+}
+
+# Function to determine color based on value
+get_color() {
+    local value=$1
+    if [[ -z "$value" || "$value" == "N/A" ]]; then
+        echo -e "${RED}${value}${RESET}"  # Red for failed
+    elif (( $(echo "$value <= 50" | bc -l) )); then
+        echo -e "${GREEN}${value}ms${RESET}"  # Green for fast response
+    elif (( $(echo "$value > 50 && $value <= 100" | bc -l) )); then
+        echo -e "${YELLOW}${value}ms${RESET}"  # Yellow for moderate response
+    else
+        echo -e "${RED}${value}ms${RESET}"  # Red for slow response
+    fi
 }
 
 # Start DNS Checking (Live Logs)
@@ -99,27 +119,35 @@ start_dig() {
             QUERY_TIME=$(echo "$DIG_OUTPUT" | grep "Query time" | awk '{print $4}')
 
             # Run ping test
-            PING_OUTPUT=$(ping -c 1 "$DNS_IP" | grep "time=" | awk -F'time=' '{print $2}' | awk '{print $1}')
+            PING_OUTPUT=$(ping -c 1 "$DNS_IP" 2>/dev/null | grep "time=" | awk -F'time=' '{print $2}' | awk '{print $1}')
+
+            # Set default values if empty
+            [[ -z "$QUERY_TIME" ]] && QUERY_TIME="N/A"
+            [[ -z "$PING_OUTPUT" ]] && PING_OUTPUT="N/A"
+
+            # Get colored outputs
+            QUERY_TIME_COLOR=$(get_color "$QUERY_TIME")
+            PING_TIME_COLOR=$(get_color "$PING_OUTPUT")
 
             # Determine status
-            if [[ -n "$QUERY_TIME" ]]; then
+            if [[ "$QUERY_TIME" != "N/A" ]]; then
                 STATUS="${GREEN}✔ SUCCESS${RESET}"
-                PING_COLOR=${GREEN}
                 ((SUCCESS_COUNT++))
             else
                 STATUS="${RED}✖ FAILED${RESET}"
-                PING_COLOR=${RED}
                 ((FAIL_COUNT++))
             fi
 
             # Display results
             echo -e "DNS IP: ${BLUE}$DNS_IP${RESET} | NameServer: ${YELLOW}$NS${RESET}"
-            echo -e "Status: $STATUS | Query Time: ${YELLOW}${QUERY_TIME:-N/A}ms${RESET} | Ping: ${PING_COLOR}${PING_OUTPUT:-N/A}ms${RESET}"
+            echo -e "Status: $STATUS | Query Time: $QUERY_TIME_COLOR | Ping: $PING_TIME_COLOR"
             echo "-------------------------------------------"
         done
 
         echo -e "Total Success: ${GREEN}$SUCCESS_COUNT${RESET} | Total Failed: ${RED}$FAIL_COUNT${RESET}"
-        sleep "$DIG_INTERVAL"
+        
+        # Sleep only if interval is > 0
+        (( DIG_INTERVAL > 0 )) && sleep "$DIG_INTERVAL"
     done
 }
 
