@@ -6,7 +6,7 @@ This script installs necessary tools and sets up the `menu` command.
 
 ## Installation
 
-## VERSION: 1.4
+## VERSION: 1.6
 
 Run the following command in **Termux**:
 ```bash
