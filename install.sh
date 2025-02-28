@@ -5,6 +5,7 @@ SCRIPT_URL="https://raw.githubusercontent.com/Jhon-mark23/Termux-beta/main/menu.
 SCRIPT_NAME="menu.sh"
 INSTALL_DIR="$HOME/dig_checker"
 INSTALL_PATH="$INSTALL_DIR/$SCRIPT_NAME"
+BIN_PATH="/data/data/com.termux/files/usr/bin/menu"
 
 # Update package list and install required tools
 echo "Updating Termux and installing required packages..."
@@ -21,14 +22,10 @@ curl -o "$INSTALL_PATH" "$SCRIPT_URL"
 # Make it executable
 chmod +x "$INSTALL_PATH"
 
-# Ensure ~/bin exists and add it to PATH if missing
-mkdir -p "$HOME/bin"
-ln -sf "$INSTALL_PATH" "$HOME/bin/menu"
-
-if ! grep -q 'export PATH="$HOME/bin:$PATH"' "$HOME/.bashrc"; then
-    echo 'export PATH="$HOME/bin:$PATH"' >> "$HOME/.bashrc"
-fi
-source "$HOME/.bashrc"
+# Move the script to /data/data/com.termux/files/usr/bin/menu
+echo "Setting up menu command..."
+mv -f "$INSTALL_PATH" "$BIN_PATH"
+chmod +x "$BIN_PATH"
 
 echo "Installation complete!"
 echo "Run the script using: menu"
