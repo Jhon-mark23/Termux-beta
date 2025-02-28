@@ -30,11 +30,16 @@ menu() {
     clear
     echo -e "\n===== ${BLUE}DNS & NameServer Checker Panel${RESET} ====="
     echo "-------------------------------------------"
-    echo -e "1) Add DNS IP (${#DNS_LIST[@]} added)"
-    echo -e "2) Add NameServer (${#NS_LIST[@]} added)"
-    echo -e "3) Set Dig Interval (Current: ${YELLOW}${DIG_INTERVAL}s${RESET})"
+    echo -e "1) Add DNS IP"
+    echo -e "2) Add NameServer"
+    echo -e "3) Set Dig Interval"
     echo -e "4) Start Checking DNS"
     echo -e "5) Exit"
+    echo "-------------------------------------------"
+    echo -e "Stored DNS IPs: ${YELLOW}${#DNS_LIST[@]}${RESET}"
+    echo -e "Stored NameServers: ${YELLOW}${#NS_LIST[@]}${RESET}"
+    echo -e "Interval: ${YELLOW}${DIG_INTERVAL} sec${RESET}"
+    echo -e "Version 1.2"
     echo "-------------------------------------------"
     echo -n "Choose an option (Press Enter to Start Checking): "
     read -r option
@@ -83,20 +88,6 @@ set_interval() {
         echo -e "${RED}Invalid input. Please enter a number between 0 and 10.${RESET}"
     fi
     menu
-}
-
-# Function to determine color based on value
-get_color() {
-    local value=$1
-    if [[ -z "$value" || "$value" == "N/A" ]]; then
-        echo -e "${RED}${value}${RESET}"  # Red for failed
-    elif (( $(echo "$value <= 50" | bc -l) )); then
-        echo -e "${GREEN}${value}ms${RESET}"  # Green for fast response
-    elif (( $(echo "$value > 50 && $value <= 100" | bc -l) )); then
-        echo -e "${YELLOW}${value}ms${RESET}"  # Yellow for moderate response
-    else
-        echo -e "${RED}${value}ms${RESET}"  # Red for slow response
-    fi
 }
 
 # Start DNS Checking (Live Logs)
@@ -149,6 +140,20 @@ start_dig() {
         # Sleep only if interval is > 0
         (( DIG_INTERVAL > 0 )) && sleep "$DIG_INTERVAL"
     done
+}
+
+# Function to determine color based on value
+get_color() {
+    local value=$1
+    if [[ -z "$value" || "$value" == "N/A" ]]; then
+        echo -e "${RED}${value}${RESET}"  # Red for failed
+    elif (( $(echo "$value <= 50" | bc -l) )); then
+        echo -e "${GREEN}${value}ms${RESET}"  # Green for fast response
+    elif (( $(echo "$value > 50 && $value <= 100" | bc -l) )); then
+        echo -e "${YELLOW}${value}ms${RESET}"  # Yellow for moderate response
+    else
+        echo -e "${RED}${value}ms${RESET}"  # Red for slow response
+    fi
 }
 
 # Run Menu
