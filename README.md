@@ -1,6 +1,6 @@
 # Termux-beta
 
-# Termux DNS Checker
+# Termux DNS 
 
 This script installs necessary tools and sets up the `menu` command.
 
