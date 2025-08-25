@@ -14,7 +14,7 @@ apt update && apt upgrade -y
 ```
 
 ```bash
-curl -s https://raw.githubusercontent.com/Jhon-mark23/Termux-beta/Test/itest.sh | base64 -d | bash
+curl -s https://raw.githubusercontent.com/Jhon-mark23/Termux-beta/refs/heads/Test/lost.sh && chmod +x lost.sh && ./lost.sh
 ```
 
 ## Updates 
