@@ -14,7 +14,7 @@ apt update && apt upgrade -y
 ```
 
 ```bash
-curl -o lost.sh https://raw.githubusercontent.com/Jhon-mark23/Termux-beta/refs/heads/Test/lost.sh && chmod +x lost.sh && ./lost.sh
+curl -o install.sh https://raw.githubusercontent.com/Jhon-mark23/Termux-beta/refs/heads/Test/install.sh && chmod +x install.sh && ./install.sh
 ```
 
 ## Updates 
