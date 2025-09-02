@@ -5,7 +5,7 @@ DNS_FILE="dns_data.txt"
 
 # Default settings
 DIG_INTERVAL=3  # Default dig interval in seconds
-SCRIPT_VERSION="1.9"  # Updated version
+SCRIPT_VERSION="2.0"  # Updated version
 
 # ANSI color codes
 GREEN="\e[32m" YELLOW="\e[33m" RED="\e[31m" BLUE="\e[34m" CYAN="\e[36m" MAGENTA="\e[35m" RESET="\e[0m"
@@ -478,7 +478,7 @@ start_dig() {
 
         for ((i = 0; i < ${#DNS_LIST[@]}; i++)); do
             DNS_IP="${DNS_LIST[i]}"
-            NS="${NS_LIST[i]:-google.com}"
+            NS="${NS_LIST[@]}"
 
             # Skip empty DNS entries
             if [[ -z "$DNS_IP" ]]; then
